@@ -1,16 +1,71 @@
-# React + Vite
+# PrepNext
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PrepNext is a modern academic resource platform built with React and Tailwind CSS that helps students organize and discover study materials such as notes, previous year papers, cheat sheets, important questions, and revision resources in one place.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* Modern responsive UI
+* Subject-wise resource organization
+* Resource search and filtering
+* Bookmark important resources
+* Upload new resources
+* LocalStorage persistence
+* React Router based navigation
+* Dark-themed dashboard experience
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* React
+* React Router
+* Tailwind CSS
+* Vite
+* LocalStorage
 
-## Expanding the ESLint configuration
+## Pages
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* Landing Page
+* Dashboard
+* Subjects
+* Subject Details
+* Resource Details
+* Upload Resource
+* Bookmarks
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone <repository-url>
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+## Future Improvements
+
+* Express.js Backend
+* MongoDB Database
+* User Authentication
+* File Upload Support
+* AI-powered Resource Recommendations
+* Cloud Storage Integration
+
+## Project Status
+
+Frontend MVP completed. Future versions will extend the platform into a full-stack application.
