@@ -15,7 +15,7 @@ const Landing = () => {
     },
     {
       title: 'Bookmarks',
-      description: 'Save important resources for quick access later.',
+      description: 'Save important materials for faster access later.',
       icon: Bookmark,
     },
     {
