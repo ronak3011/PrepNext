@@ -20,7 +20,7 @@ A platform built for students to easily share, discover, and organize study mate
 
 cd backend
 npm install
-# You will need to create a .env file here with your MONGO_URI and JWT_SECRET
+[You will need to create a .env file here with your MONGO_URI and JWT_SECRET]
 node server.js
    
 3. Set up the frontend - 
