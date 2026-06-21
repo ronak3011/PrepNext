@@ -22,7 +22,7 @@ const SubjectCard = ({ subject, resourceCount }) => {
         </p>
         
         <div className="flex items-center text-sm font-medium text-textPrimary mt-auto pt-4 border-t border-borders">
-          Browse Materials
+          Browse Resources
           <ArrowRight className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
