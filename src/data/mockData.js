@@ -12,8 +12,7 @@ export const RESOURCE_TYPES = [
   'PYQs',
   'Cheat Sheets',
   'Important Questions',
-  'Assignments',
-  'Viva Questions',
+  'Formula Sheet',
 ]
 
 export const INITIAL_RESOURCES = [
