@@ -4,7 +4,8 @@ import { useBookmarks } from '../hooks/useBookmarks'
 
 const ResourceCard = ({ resource, subjectName }) => {
   const { isBookmarked, toggleBookmark } = useBookmarks()
-  const bookmarked = isBookmarked(resource.id)
+  const resourceId = resource._id || resource.id
+  const bookmarked = isBookmarked(resourceId)
 
   return (
     <div className="bg-surface border border-borders rounded-xl p-5 card-hover flex flex-col h-full">
@@ -31,12 +32,12 @@ const ResourceCard = ({ resource, subjectName }) => {
       
       <div className="flex items-center justify-between mt-auto pt-4 border-t border-borders">
         <span className="text-xs text-textSecondary">
-          {new Date(resource.uploadDate).toLocaleDateString()}
+          {new Date(resource.createdAt || resource.uploadDate).toLocaleDateString()}
         </span>
         
         <div className="flex space-x-2">
           <button 
-            onClick={() => toggleBookmark(resource.id)}
+            onClick={() => toggleBookmark(resourceId)}
             className={`p-2 rounded-lg transition-colors ${
               bookmarked ? 'bg-primary/20 text-primary' : 'bg-cards text-textSecondary hover:text-textPrimary hover:bg-borders'
             }`}
@@ -44,11 +45,11 @@ const ResourceCard = ({ resource, subjectName }) => {
           >
             <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-current' : ''}`} />
           </button>
-          <button className="p-2 bg-cards text-textSecondary rounded-lg hover:text-textPrimary hover:bg-borders transition-colors" title="Download">
+          <a href={resource.url || "#"} target="_blank" rel="noreferrer" className="p-2 bg-cards text-textSecondary rounded-lg hover:text-textPrimary hover:bg-borders transition-colors" title="Download">
             <Download className="w-4 h-4" />
-          </button>
+          </a>
           <Link 
-            to={`/resources/${resource.id}`}
+            to={`/resources/${resourceId}`}
             className="p-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm shadow-primary/20"
             title="View Details"
           >

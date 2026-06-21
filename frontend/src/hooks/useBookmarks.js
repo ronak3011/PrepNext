@@ -32,7 +32,7 @@ export const useBookmarks = () => {
   const toggleBookmark = async (resourceId) => {
     if (!user) return; // Must be logged in
 
-    const isCurrentlyBookmarked = bookmarks.some(b => b.resource._id === resourceId);
+    const isCurrentlyBookmarked = bookmarks.some(b => b.resource?._id === resourceId);
 
     try {
       if (isCurrentlyBookmarked) {
@@ -47,7 +47,7 @@ export const useBookmarks = () => {
     }
   };
 
-  const isBookmarked = (resourceId) => bookmarks.some((b) => b.resource._id === resourceId);
+  const isBookmarked = (resourceId) => bookmarks.some((b) => b.resource?._id === resourceId);
 
   return { bookmarks, loading, toggleBookmark, isBookmarked, fetchBookmarks };
 };

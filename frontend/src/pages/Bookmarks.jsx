@@ -18,13 +18,17 @@ const Bookmarks = () => {
 
       {bookmarks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bookmarks.map(bookmark => (
-            <ResourceCard
-              key={bookmark.resource._id}
-              resource={bookmark.resource}
-              subjectName={bookmark.resource.subject?.title || 'Unknown'}
-            />
-          ))}
+            {bookmarks.map(bookmark => {
+            if (!bookmark.resource) return null; 
+            return (
+              <ResourceCard
+                key={bookmark.resource._id}
+                resource={bookmark.resource}
+                subjectName={bookmark.resource.subject?.title || 'Unknown'}
+              />
+            )
+          })}
+
         </div>
       ) : (
         <EmptyState

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export const useResources = () => {
+export const useResources = (initialSubjectId = '') => {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,8 +19,8 @@ export const useResources = () => {
   };
 
   useEffect(() => {
-    fetchResources();
-  }, []);
+    fetchResources(initialSubjectId);
+  }, [initialSubjectId]);
 
   const addResource = async (resourceData) => {
     try {

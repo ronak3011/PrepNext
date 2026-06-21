@@ -11,9 +11,9 @@ const resourceSchema = new mongoose.Schema({
     required: [true, 'Please add a description']
   },
   type: {
-    type: String,
-    required: [true, 'Please add a resource type (e.g. Notes, PYQs)'],
-    enum: ['Notes', 'PYQs', 'Books', 'Syllabus', 'Video'] // Example enum
+  type: String,
+  required: [true, 'Please add a resource type'],
+  enum: ['Notes', 'PYQs', 'Cheat Sheets', 'Important Questions', 'Assignments', 'Viva Questions']
   },
   url: {
     type: String,

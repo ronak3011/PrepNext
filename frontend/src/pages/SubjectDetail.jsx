@@ -11,7 +11,7 @@ import EmptyState from '../components/EmptyState'
 
 const SubjectDetail = () => {
   const { subjectId } = useParams()
-  const { resources, fetchResources } = useResources()
+  const { resources } = useResources(subjectId)
   const [subject, setSubject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -29,7 +29,6 @@ const SubjectDetail = () => {
       }
     }
     fetchSubject()
-    fetchResources(subjectId)
   }, [subjectId])
 
   if (loading) {
