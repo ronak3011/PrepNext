@@ -9,7 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   // We set the base URL for axios so we don't have to type it every time
   // Note: For production, this should point to your deployed backend URL.
-  axios.defaults.baseURL = 'http://localhost:5000';
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 
   useEffect(() => {
     // Check if user is already logged in by checking localStorage for user data
