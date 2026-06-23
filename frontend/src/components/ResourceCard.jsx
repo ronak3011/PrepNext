@@ -1,11 +1,17 @@
 import { FileText, Download, Bookmark, ExternalLink } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 import { useBookmarks } from '../hooks/useBookmarks'
+import StarRating from './StarRating'
 
 const ResourceCard = ({ resource, subjectName }) => {
   const { isBookmarked, toggleBookmark } = useBookmarks()
   const resourceId = resource._id || resource.id
   const bookmarked = isBookmarked(resourceId)
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  // The backend proxy handles tracking and renaming the file
+  const downloadUrl = `${API_URL}/api/resources/${resourceId}/download`;
 
   return (
     <div className="bg-surface border border-borders rounded-xl p-5 card-hover flex flex-col h-full">
@@ -20,6 +26,14 @@ const ResourceCard = ({ resource, subjectName }) => {
             </span>
           )}
           <h3 className="text-lg font-semibold text-textPrimary line-clamp-2">{resource.title}</h3>
+          
+          <div className="mt-2">
+            <StarRating 
+              rating={resource.averageRating} 
+              totalRatings={resource.totalRatings} 
+              size="w-3.5 h-3.5" 
+            />
+          </div>
         </div>
         <div className="p-2 bg-cards rounded-lg text-textSecondary">
           <FileText className="w-5 h-5" />
@@ -45,7 +59,13 @@ const ResourceCard = ({ resource, subjectName }) => {
           >
             <Bookmark className={`w-4 h-4 ${bookmarked ? 'fill-current' : ''}`} />
           </button>
-          <a href={resource.url || "#"} target="_blank" rel="noreferrer" className="p-2 bg-cards text-textSecondary rounded-lg hover:text-textPrimary hover:bg-borders transition-colors" title="Download">
+          <a 
+            href={downloadUrl} 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 bg-cards text-textSecondary rounded-lg hover:text-textPrimary hover:bg-borders transition-colors" 
+            title="Download"
+          >
             <Download className="w-4 h-4" />
           </a>
           <Link 

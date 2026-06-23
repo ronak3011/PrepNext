@@ -5,11 +5,14 @@ import ResourceCard from '../components/ResourceCard'
 import EmptyState from '../components/EmptyState'
 import { useResources } from '../hooks/useResources'
 import { useBookmarks } from '../hooks/useBookmarks'
+import { useContext, useEffect } from 'react'
+import { AuthContext } from '../context/AuthContext'
 import { SUBJECTS } from '../data/mockData'
 
 const Dashboard = () => {
   const { resources } = useResources()
   const { bookmarks } = useBookmarks()
+  const { user } = useContext(AuthContext)
 
   const totalResources = resources.length
   const totalBookmarks = bookmarks.length
@@ -55,6 +58,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content: Recent Resources */}
         <div className="lg:col-span-2">
+          
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-textPrimary">Recently Uploaded</h2>
             <Link to="/subjects" className="text-textSecondary text-sm font-medium hover:text-textPrimary flex items-center transition-colors">

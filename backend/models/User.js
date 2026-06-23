@@ -20,15 +20,23 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please add a password'],
     minlength: 6,
     select: false // Do not return password by default
+  },
+  streak: {
+    type: Number,
+    default: 0
+  },
+  lastActiveDate: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true
 });
 
 // Encrypt password using bcrypt before saving to DB
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function() {
   if (!this.isModified('password')) {
-    next();
+    return;
   }
 
   const salt = await bcrypt.genSalt(10);

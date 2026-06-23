@@ -17,11 +17,24 @@ export const AuthProvider = ({ children }) => {
     const loggedInUser = localStorage.getItem('user');
     if (loggedInUser) {
       const parsedUser = JSON.parse(loggedInUser);
-      setUser(parsedUser);
       // Set the token for all future axios requests
       axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
+      
+      // Fetch fresh user data (triggers streak update on backend)
+      axios.get('/api/auth/me')
+        .then(response => {
+          const freshUser = { ...response.data, token: parsedUser.token };
+          localStorage.setItem('user', JSON.stringify(freshUser));
+          setUser(freshUser);
+        })
+        .catch(error => {
+          console.error("Error fetching fresh user data:", error);
+          setUser(parsedUser); // Fallback to local storage if API fails
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
@@ -50,8 +63,22 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  const refreshUser = async () => {
+    if (axios.defaults.headers.common['Authorization']) {
+      try {
+        const response = await axios.get('/api/auth/me');
+        const token = axios.defaults.headers.common['Authorization'].split(' ')[1];
+        const freshUser = { ...response.data, token };
+        localStorage.setItem('user', JSON.stringify(freshUser));
+        setUser(freshUser);
+      } catch (error) {
+        console.error("Error refreshing user", error);
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, refreshUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );

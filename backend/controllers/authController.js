@@ -9,6 +9,41 @@ const generateToken = (id) => {
   });
 };
 
+// Helper function to calculate and update streak
+const updateUserStreak = async (user) => {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  let updated = false;
+
+  if (!user.lastActiveDate) {
+    user.streak = 1;
+    user.lastActiveDate = today;
+    updated = true;
+  } else {
+    const lastActive = new Date(user.lastActiveDate);
+    const lastActiveDay = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
+    
+    const diffTime = today.getTime() - lastActiveDay.getTime();
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) {
+      user.streak = (user.streak || 0) + 1;
+      user.lastActiveDate = today;
+      updated = true;
+    } else if (diffDays > 1) {
+      user.streak = 1;
+      user.lastActiveDate = today;
+      updated = true;
+    }
+  }
+
+  if (updated) {
+    await user.save();
+  }
+  return user;
+};
+
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
@@ -27,10 +62,12 @@ const registerUser = async (req, res) => {
     }
 
     // Create user (password is hashed in the Mongoose model pre-save hook)
-    const user = await User.create({
+    let user = await User.create({
       name,
       email,
-      password
+      password,
+      streak: 1,
+      lastActiveDate: new Date()
     });
 
     if (user) {
@@ -38,6 +75,7 @@ const registerUser = async (req, res) => {
         _id: user.id,
         name: user.name,
         email: user.email,
+        streak: user.streak,
         token: generateToken(user._id),
       });
     } else {
@@ -57,13 +95,16 @@ const loginUser = async (req, res) => {
 
     // Check for user email
     // We use +password to explicitly select the password field since we set select: false in the model
-    const user = await User.findOne({ email }).select('+password');
+    let user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
+      user = await updateUserStreak(user);
+
       res.json({
         _id: user.id,
         name: user.name,
         email: user.email,
+        streak: user.streak,
         token: generateToken(user._id),
       });
     } else {
@@ -80,7 +121,8 @@ const loginUser = async (req, res) => {
 const getMe = async (req, res) => {
   try {
     // req.user is set in the authMiddleware
-    res.json(req.user);
+    let updatedUser = await updateUserStreak(req.user);
+    res.json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

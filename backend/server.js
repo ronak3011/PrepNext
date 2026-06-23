@@ -14,14 +14,17 @@ const app = express();
 // Middleware
 // Enable CORS for frontend requests
 app.use(cors());
-// Parse incoming JSON payloads
-app.use(express.json());
+// Parse incoming JSON payloads with a high limit for massive PDF text data
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Mount routers
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/subjects', require('./routes/subjects'));
 app.use('/api/resources', require('./routes/resources'));
 app.use('/api/bookmarks', require('./routes/bookmarks'));
+app.use('/api/chat', require('./routes/chatRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
 
 // Basic health check route
 app.get('/', (req, res) => {

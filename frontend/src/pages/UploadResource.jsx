@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Upload, CheckCircle, ChevronDown } from 'lucide-react'
+import { Upload, CheckCircle, ChevronDown, FileText, X } from 'lucide-react'
 import { RESOURCE_TYPES } from '../data/mockData'
 import { useResources } from '../hooks/useResources'
 
@@ -15,8 +15,8 @@ const UploadResource = () => {
     subjectId: '',
     type: RESOURCE_TYPES[0],
     description: '',
-    url: ''
   })
+  const [file, setFile] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -41,17 +41,36 @@ const UploadResource = () => {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0])
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError('')
 
     try {
+      if (!file) {
+        throw new Error('Please select a PDF file to upload')
+      }
+
+      // Step 1: Upload the file to our backend (which forwards it to Cloudinary)
+      const uploadData = new FormData()
+      uploadData.append('file', file)
+      
+      const uploadRes = await axios.post('/api/upload', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      const pdfUrl = uploadRes.data.pdfUrl
+
+      // Step 2: Save the resource in our database with the new Cloudinary URL
       const newResource = await addResource({
         title: formData.title,
         description: formData.description,
         type: formData.type,
-        url: formData.url,
+        url: pdfUrl,
         subject: formData.subjectId
       })
       
@@ -63,7 +82,7 @@ const UploadResource = () => {
       }, 1500)
     } catch (err) {
       setIsSubmitting(false)
-      setError(err.response?.data?.message || 'Failed to upload resource')
+      setError(err.response?.data?.message || err.message || 'Failed to upload resource')
     }
   }
 
@@ -107,19 +126,40 @@ const UploadResource = () => {
           </div>
 
           <div>
-            <label htmlFor="url" className="block text-sm font-medium text-textPrimary mb-2">
-              Resource URL (Google Drive, Notion, etc.)
+            <label className="block text-sm font-medium text-textPrimary mb-2">
+              Upload PDF File
             </label>
-            <input
-              type="url"
-              id="url"
-              name="url"
-              required
-              placeholder="https://..."
-              value={formData.url}
-              onChange={handleChange}
-              className="w-full px-4 py-3 bg-background border border-borders rounded-xl text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-            />
+            
+            {file ? (
+              <div className="flex items-center justify-between p-4 bg-cards border border-borders rounded-xl transition-all">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <span className="text-textPrimary text-sm font-medium truncate">
+                    {file.name}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFile(null)}
+                  className="p-2 text-textSecondary hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors shrink-0"
+                  title="Remove file"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <input
+                type="file"
+                id="file"
+                name="file"
+                accept="application/pdf"
+                required
+                onChange={handleFileChange}
+                className="w-full px-4 py-3 bg-background border border-borders rounded-xl text-textPrimary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+              />
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
