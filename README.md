@@ -6,6 +6,8 @@ PrepNext is a student-built platform where you can upload and discover study mat
 
 ---
 
+🌐 **Live Demo:** https://prepnext-1.onrender.com/
+
 ## What you can do
 
 - **Upload resources** — Share links to notes, assignments, or PYQs so your peers don't have to start from scratch
